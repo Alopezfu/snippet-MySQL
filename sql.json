@@ -1,0 +1,161 @@
+{
+	"consult permisosns": {
+		"prefix": "consult",
+		"body": [
+			"/*",
+			"\tALL PRIVILEGES - Da todos los permisos",
+			"\tALTER - Permite el uso de ALTER TABLE",
+			"\tCREATE - Permite el uso de CREATE TABLE",
+			"\tCREATE USER - Permite el uso de CREATE USER , DROP USER , RENAME USER y REVOKE ALL PRIVILEGES",
+			"\tDELETE - Permite el uso de DELETE",
+			"\tDROP - Permite el uso de DROP TABLE",
+			"\tGRANT OPTION - Permite dar permisos",
+			"\tINDEX - Permite el uso de CREATE INDEX y DROP INDEX",
+			"\tINSERT - Permite el uso de INSERT",
+			"\tSELECT - Permite el uso de SELECT",
+			"\tUPDATE - Permite el uso de UPDATE",
+			"\tUSAGE - Es equivalente a no privileges",
+			"*/"
+		],
+		"description": "Tabla de premios, recuerda que ALL PRIVILEGES no da permisos para dar permisos."
+	},
+	"create user": {
+		"prefix": "create user",
+		"body": "CREATE USER ${1:user}@${2:host} IDENTIFIED BY '${3:password}';",
+		"description": "Crear usuario, contraseña no encriptada y usuario solo puede conectarse."
+	},
+	"create user2": {
+		"prefix": "create user pass",
+		"body": "CREATE USER ${1:user}@${2:host} IDENTIFIED BY PASSWORD '${3:HASH-PASSWORD}';",
+		"description": "Crear usuario, contraseña encriptada y usuario solo puede conectarse."
+	},
+	"select pass": {
+		"prefix": "slect pass",
+		"body": "SELECT PASSWORD('${1:password-to-encript}');",
+		"description": "Consultar contraseña encriptada."
+	},
+	"drop user": {
+		"prefix": "drop user",
+		"body": "DROP USER ${1:user}@${2:host};",
+		"description": "Eliminar usuario, recuera esta sentencia no cierra automáticamente la sesión, esto quiere decir que hasta que el usuario no salga de la sesión este no se eliminará. Puedes añadir mas usuarios añadiendo una coma entre ellos."
+	},
+	"rename user": {
+		"prefix": "rename user",
+		"body": "RENAME USER ${1:oldUser}@${2:newName};",
+		"description": "Cambiar el nombre a un usuario, Puedes añadir mas usuarios añadiendo una coma entre ellos."
+	},
+	"set password": {
+		"prefix": "set password",
+		"body": "SET PASSWORD = PASSWORD('${1:password}');",
+		"description": "Asignar contraseña encriptada a el usuario actual."
+	},
+	"set password user": {
+		"prefix": "set password user",
+		"body": "SET PASSWORD ${1:user}@${2:host} = PASSWORD('${2:password}');",
+		"description": "Asignar contraseña encriptada a un usuario."
+	},
+	"grant": {
+		"prefix": "grant",
+		"body": "GRANT ${1|ALL PRIVILEGES,ALTER,CREATE,CREATE USER,DELETE,DROP,INDEX,INSERT,SELECT,UPDATE,USAGE|} ON ${2:database}.${3:table} TO ${4:user}@${5:host};",
+		"description": "Asignar permisos, puedes especificar una la comuna con una coma despes del permisos."
+	},
+	"revoke": {
+		"prefix": "revoke",
+		"body": "REVOKE ${1|ALL PRIVILEGES,ALTER,CREATE,CREATE USER,DELETE,DROP,INDEX,INSERT,SELECT,UPDATE,USAGE|} FROM ${4:user}@${5:host};",
+		"description": "Quitar permisos, puedes añadir mas usuarios añadiendo una coma entre ellos."
+	},
+	"show grants": {
+		"prefix": "show grants",
+		"body": "SHOW GRANTS ${4:user}@${5:host};",
+		"description": "Asignar permisos, puedes especificar una la comuna con una coma despes del permisos."
+	},
+	"examples": {
+		"prefix": "examples",
+		"body": [
+			"/*",
+			"\tCREATE USER Jordi@localhost; - Crear usuario. Sin restriciones de host.",
+			"\tCREATE USER Laura IDENTIFIED BY 'Terrassa'; - Crear usuario con contraseña. Sin restriciones de host",
+			"\tCREATE USER Miquel@'192.168.0.55' IDENTIFIED BY PASSWORD '*0B1D3655498209F8EA0B513CAEAB18520FA55537'; - Crear usuario con contraseña encriptada. Con restriciones de host",
+			"\tDROP USER Jordi@localhost,Miquel@'192.168.0.55'; - Eliminar usaurios.",
+			"\tRENAME USER Laura TO Marta; - Renombrar usuario",
+			"\tSET PASSWORD = PASSWORD('some password'); - Asignar contraseña al usuario actual",
+			"\tSET PASSWORD FOR pablo@192.168.1.54 = PASSWORD('some password'); Asignar contraseña encriptada a un usuario.",
+			"\tGRANT ALL PRIVILEGES ON *.* TO Miquel@'192.168.0.55'; - Dar permisos a un usuario a todas las bases de datos y todas las tablas.",
+			"\tGRANT ALL PRIVILEGES ON *.* TO Miquel@'192.168.0.55' GRANT OPTION; - Dar todos los permisos a un usuario a todas las bases de datos y todas las tablas.",
+			"\tREVOKE ALL PRIVILEGES, GRANT OPTION FROM p_actual; - Elimianr permisos a un usuario.",
+			"*/"
+		]
+	},
+	// Procediemtos SQL
+	"procediemtos": {
+		"prefix": "create procedur",
+		"body": [
+			"DELIMITER //",
+			"CREATE PROCEDURE ${1:nombreProcediemto}()",
+			"BEGIN",
+			"\t${2:#code...}",
+			"END //",
+			"DELIMITER ;"
+		]
+	},
+	"if": {
+		"prefix": "if",
+		"body": [
+			"if(${1:condicion})",
+			"THEN",
+			"\t${2:#code...}",
+			"END IF;"
+		]
+	},
+	"ifELSE": {
+		"prefix": "if else",
+		"body": [
+			"if(${1:condicion})",
+			"THEN",
+			"\t${2:#code...}",
+			"ELSE",
+			"\t${3:#code...}",
+			"END IF;"
+		]
+	},
+	"declare": {
+		"prefix": "declare",
+		"body": "DECLARE ${1:nombreVariable} ${2:tipoVariable} DEFAUTL ${3:valorPorDefecto};"
+	},
+	"set": {
+		"prefix": "set",
+		"body": "SET ${1:nombreVariable} ${2:valor};"
+	},
+	"call": {
+		"prefix": "call",
+		"body": "CALL ${1:nombreProcediemto}(${2:parametros});"
+	},
+	"prepare": {
+		"prefix": "prepare",
+		"body": [
+			"SET @${1:var_sentencia}=CONCAT('${2:consulta}',${3:entradaUsuario},'${4:consulta2}')",
+			"PREPARE sentencia FROM @${1:var_sentencia};",
+			"EXECUTE sentencia;",
+			"DEALLOCATE PREPARE sentencia;"
+		]
+	},
+	"while": {
+		"prefix": "while",
+		"body": [
+			"WHILE (${1:condicion})",
+			"DO",
+			"\t${2:@code...}",
+			"END WHILE;"
+		]
+	},
+	"handler": {
+		"prefix": "handler",
+		"body": [
+			"DECLARE ${1|EXIT,CONTINUE|} HANDLER FOR ${2|1146,1050|}",
+			"BEGIN",
+			"\t${3:#code...}",
+			"END;"
+		],
+		"description": "El 1146, La tabla no existe y el 1050, La tabla ya existe."
+	}
+}
